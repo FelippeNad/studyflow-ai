@@ -1,0 +1,12 @@
+id_nota;id_disciplina;avaliacao;nota;peso
+1;1;Prova 1;8.5;0.4
+2;1;Trabalho;9.0;0.3
+3;2;Prova 1;7.0;0.5
+4;3;Projeto Final;8.8;0.6
+5;4;Seminário;9.5;0.3
+6;5;Prova 1;6.5;0.4
+7;6;Lista de Exercícios;10.0;0.2
+8;7;Prova 1;5.5;0.4
+9;10;Trabalho;9.2;0.5
+10;1;Lista de Exercícios;10.0;0.1
+11;2;Prova 2;8.0;0.5

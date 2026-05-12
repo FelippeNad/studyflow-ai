@@ -1,0 +1,11 @@
+id_disciplina;nome_disciplina;professor;carga_horaria;dia_semana;horario
+1;Inteligência Artificial;Prof. Alan Turing;80;Segunda-feira;19:00
+2;Banco de Dados;Prof. Edgar Codd;60;Terça-feira;20:40
+3;Desenvolvimento Web;Prof. Tim Berners-Lee;60;Quinta-feira;19:00
+4;Engenharia de Software;Prof. Margaret Hamilton;80;Quarta-feira;19:00
+5;Estruturas de Dados;Prof. Donald Knuth;80;Sexta-feira;19:00
+6;Redes de Computadores;Prof. Vint Cerf;60;Quinta-feira;20:40
+7;Sistemas Operacionais;Prof. Linus Torvalds;80;Terça-feira;19:00
+8;Computação em Nuvem;Prof. Jeff Bezos;40;Quarta-feira;20:40
+9;Segurança da Informação;Prof. Kevin Mitnick;60;Segunda-feira;20:40
+10;Machine Learning;Prof. Andrew Ng;80;Sexta-feira;20:40

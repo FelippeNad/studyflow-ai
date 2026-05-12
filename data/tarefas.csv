@@ -1,0 +1,12 @@
+id_tarefa;id_disciplina;descricao;tipo;data_entrega;status;prioridade
+1;1;Implementar Rede Neural Simples;Projeto;2026-05-15;Pendente;Alta
+2;2;Modelagem do Banco de Dados;Trabalho;2026-05-12;Em andamento;Alta
+3;3;Criar API RESTful;Trabalho;2026-05-18;Pendente;Média
+4;4;Documento de Requisitos;Relatório;2026-05-10;Concluída;Baixa
+5;5;Lista de Árvores Binárias;Lista;2026-05-14;Pendente;Média
+6;1;Artigo sobre IA Generativa;Seminário;2026-05-20;Pendente;Alta
+7;6;Configuração de Roteadores;Lista;2026-05-16;Em andamento;Baixa
+8;7;Simulador de Escalonamento;Projeto;2026-05-25;Pendente;Alta
+9;8;Deploy na AWS;Trabalho;2026-05-13;Em andamento;Média
+10;10;Prova Intermediária;Prova;2026-05-17;Pendente;Alta
+11;1;Estudar Algoritmos Genéticos;Lista;2026-05-11;Pendente;Alta

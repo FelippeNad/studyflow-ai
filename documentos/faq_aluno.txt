@@ -1,0 +1,34 @@
+FAQ DO ALUNO - PERGUNTAS FREQUENTES
+
+P: Como eu sei a data exata de entrega de um trabalho ou atividade?
+R: Todas as datas e prazos de entrega ficam registrados no cronograma da disciplina. Recomendamos que você confira regularmente a aba "Tarefas" do seu StudyFlow AI, que sincroniza os prazos e avisa sobre as pendências mais próximas, de acordo com o status e a prioridade da tarefa.
+
+P: O que fazer se eu perder o prazo de uma atividade avaliativa?
+R: Entregas fora do prazo estão sujeitas a descontos na nota, a critério do professor. Em geral, aplica-se uma penalidade de 20% do valor total por dia de atraso. Caso você tenha um motivo de força maior, como atestado médico, você deve contatar o professor e a secretaria acadêmica em até 48 horas úteis para apresentar a justificativa e tentar reagendar a entrega, conforme o Regulamento Acadêmico.
+
+P: Como é calculada a minha nota final nas disciplinas?
+R: A média de cada disciplina é calculada através de uma Média Ponderada, considerando os pesos definidos no plano de ensino de cada matéria. A soma da multiplicação das notas pelos respectivos pesos define a Média Final. No seu assistente (StudyFlow AI), as médias são calculadas e atualizadas automaticamente na seção de Notas, assim que o professor lança os resultados.
+
+P: Como posso entrar em contato com meus professores fora do horário de aula?
+R: O contato principal deve ser feito através do e-mail institucional do professor. Além disso, cada professor possui um horário fixo de atendimento ao aluno presencial (ou virtual), que pode ser agendado com antecedência ou consultado no plano da disciplina.
+
+P: Posso solicitar revisão de alguma prova ou trabalho caso discorde da correção?
+R: Sim, o aluno tem o direito de pedir revisão de nota em até 5 (cinco) dias úteis após a divulgação oficial do resultado no sistema. O pedido deve ser formalizado preenchendo o requerimento de revisão na secretaria, detalhando a justificativa da solicitação com base nos critérios de avaliação divulgados.
+
+P: Onde vejo a carga horária e os dias da semana das minhas aulas?
+R: Você pode encontrar o seu quadro de horários, contendo carga horária, dias da semana e horários específicos, na tela de Disciplinas do StudyFlow AI. Essa área consolida todas as informações cadastradas da sua matriz curricular para aquele semestre.
+
+P: Como funciona a prova de recuperação (Exame Final)?
+R: O Exame Final é destinado aos alunos que obtiveram Média Final entre 4,0 e 5,9 no semestre regular. A nota tirada nesse exame será somada com a média anterior e o resultado dividido por 2. Para obter aprovação definitiva, o resultado dessa nova média precisa ser igual ou superior a 5,0.
+
+P: É possível abonar faltas apresentando atestado médico?
+R: Na maioria dos casos, as faltas não são abonadas, mesmo com apresentação de atestado. O limite de 25% de faltas (cerca de um quarto das aulas totais) é concedido justamente para cobrir imprevistos como doenças breves. O atestado serve principalmente para justificar ausências em dias de avaliações, dando direito à prova de Segunda Chamada.
+
+P: Existe algum limite de disciplinas que posso cursar simultaneamente por semestre?
+R: Sim, a matrícula regular é limitada pela carga horária máxima semanal prevista na matriz curricular do seu curso (que costuma girar em torno de 30 a 36 horas semanais). Casos excepcionais para ultrapassar esse limite exigem autorização formal da coordenação do curso e análise do seu rendimento.
+
+P: Onde consigo acessar os materiais complementares (slides, apostilas) recomendados pelo professor?
+R: Todos os slides, links, listas de exercícios e leituras complementares devem ser disponibilizados pelo professor no ambiente virtual de aprendizagem ou no repositório da disciplina. Você também pode importar e centralizar parte desses documentos no seu StudyFlow AI para facilitar consultas e pesquisas.
+
+P: Posso desistir de cursar uma disciplina após o início das aulas?
+R: Sim, o trancamento ou cancelamento pontual de uma disciplina pode ser solicitado via sistema, mas existe um prazo rigoroso (geralmente estabelecido até a quarta semana letiva no calendário acadêmico). Abandonar a disciplina sem realizar o trancamento formal resultará em reprovação por falta.
