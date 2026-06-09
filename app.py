@@ -1,5 +1,13 @@
+from dotenv import load_dotenv
+load_dotenv()
+
 import streamlit as st
-import requests
+import os
+try:
+    from langfuse import observe
+except ImportError:
+    from langfuse.decorators import observe
+from agents.study_crew import run_study_crew
 
 # Configurações da página
 st.set_page_config(
@@ -30,9 +38,6 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-# URL da API do Flowise
-FLOWISE_API_URL = "http://localhost:3000/api/v1/prediction/a8e32462-20fa-4d2a-912a-e5542bfb0c35"
-
 # Cabeçalho da aplicação
 st.markdown('<p class="main-title">StudyFlow AI 🎓</p>', unsafe_allow_html=True)
 st.markdown('<p class="sub-title">Seu assistente inteligente para regras acadêmicas, notas e tarefas.</p>', unsafe_allow_html=True)
@@ -48,18 +53,35 @@ for msg in st.session_state.messages:
     with st.chat_message(msg["role"]):
         st.markdown(msg["content"])
 
-# Função para chamar a API do Flowise
-def query_flowise(question):
-    payload = {
-        "question": question
-    }
+def flush_traces():
     try:
-        response = requests.post(FLOWISE_API_URL, json=payload)
-        response.raise_for_status()
-        data = response.json()
-        return data.get("text", "Desculpe, a resposta do servidor veio vazia.")
+        from langfuse import Langfuse
+        Langfuse().flush()
+    except Exception:
+        pass
+    try:
+        import litellm
+        for callback in getattr(litellm, "callbacks", []):
+            if hasattr(callback, "Langfuse"):
+                try:
+                    callback.Langfuse.flush()
+                except Exception:
+                    pass
+    except Exception:
+        pass
+
+# Função observada pelo Langfuse para processar a pergunta com CrewAI
+@observe(name="Perguntar ao Assistente")
+def query_assistant(question):
+    try:
+        response = run_study_crew(question)
+        return response
     except Exception as e:
-        return f"🚨 Erro ao conectar com o Flowise: certifique-se de que o Docker está rodando. Detalhes: {e}"
+        return (
+            f"🚨 Erro ao executar a equipe de agentes acadêmicos.\n\n"
+            f"Certifique-se de que o **LM Studio** está aberto e com o Local Server ativo em `http://localhost:1234`.\n\n"
+            f"Detalhes: {e}"
+        )
 
 # Recebe o input do usuário na barra de chat
 if user_input := st.chat_input("Digite sua pergunta... (Ex: Quais minhas tarefas de prioridade alta?)"):
@@ -71,9 +93,12 @@ if user_input := st.chat_input("Digite sua pergunta... (Ex: Quais minhas tarefas
 
     # Exibe o indicador de 'digitando...' e faz a requisição
     with st.chat_message("assistant"):
-        with st.spinner("Analisando bases de dados..."):
-            bot_response = query_flowise(user_input)
+        with st.spinner("Analisando bases de dados com agentes inteligentes..."):
+            bot_response = query_assistant(user_input)
             st.markdown(bot_response)
+            # Força o envio imediato de todos os traces do Langfuse e LiteLLM
+            flush_traces()
     
     # Salva a resposta do bot no histórico da sessão
     st.session_state.messages.append({"role": "assistant", "content": bot_response})
+

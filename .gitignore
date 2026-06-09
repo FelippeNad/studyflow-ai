@@ -6,3 +6,5 @@ venv/
 .flowise/
 chroma/
 *.pkl
+.deepeval/
+.pytest_cache/
