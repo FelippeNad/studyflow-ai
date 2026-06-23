@@ -30,7 +30,7 @@ graph TD
     
     A1 <-->|Busca Vetorial| Qdrant[(Qdrant Cloud DB)]
     A2 <-->|Busca Estruturada| CSV1[(tarefas.csv)]
-    A3 <-->|Random Forest| ML[(Modelo de Evasão)]
+    A3 <-->|HistGradientBoosting| ML[(Modelo de Evasão)]
     
     Crew -->|Resposta Bruta| SecOut[🛡️ Output Scanner]
     SecOut -->|Resposta Segura| UI
@@ -43,7 +43,7 @@ graph TD
 *   **Orquestração de Agentes**: CrewAI
 *   **LLM Gateway**: LiteLLM (Conectado ao Qwen2.5 7B rodando localmente via LM Studio)
 *   **Vector Database**: Qdrant Cloud (Cloud DB hospedado para alta performance)
-*   **Machine Learning**: Scikit-Learn (Random Forest)
+*   **Machine Learning**: Scikit-Learn (HistGradientBoosting)
 *   **Telemetria / Observabilidade**: Langfuse
 *   **Avaliação de LLM**: DeepEval (Métricas de Fidelidade e Relevância)
 *   **Segurança**: Custom Security Pipeline (Regex / Heuristics) substituindo LLM Guard para máxima compatibilidade local.
