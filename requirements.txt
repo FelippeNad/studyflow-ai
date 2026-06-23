@@ -2,15 +2,15 @@
 streamlit==1.34.0
 
 # Agentes de IA
-crewai==0.80.0
-crewai-tools==0.14.0
+crewai==1.14.6
+crewai-tools==1.14.6
 
 # LLM Gateway e Observabilidade
-litellm==1.44.0
-langfuse==2.0.0
+litellm==1.88.0
+langfuse==2.57.0
 
 # Testes e Avaliação de LLM
-deepeval==1.0.0
+deepeval==3.9.6
 pytest==7.4.0
 openai==1.30.0
 
