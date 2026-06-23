@@ -1,136 +1,97 @@
-# StudyFlow AI — Assistente Inteligente de Organização Acadêmica 🎓
+# StudyFlow AI 🎓
 
-O **StudyFlow AI** é um assistente acadêmico inteligente projetado para auxiliar estudantes a gerenciar tarefas, prazos, notas e disciplinas, além de estimar de forma preventiva o risco de evasão escolar. A solução é baseada em uma arquitetura multi-agente robusta desenvolvida com **CrewAI**, integrada com modelos locais via **LM Studio** e uma interface amigável desenvolvida em **Streamlit**.
+![StudyFlow AI Header](https://img.shields.io/badge/Status-Finalizado-success)
+![Python Version](https://img.shields.io/badge/Python-3.10%2B-blue)
+![Streamlit](https://img.shields.io/badge/Streamlit-1.34.0-FF4B4B)
+![Qdrant](https://img.shields.io/badge/Qdrant-Cloud-purple)
 
----
+**StudyFlow AI** é um assistente acadêmico inteligente desenvolvido para resolver o desafio de organização de estudos, tarefas e notas universitárias. Construído usando a metodologia **Challenge-Based Learning (CBL)**, ele funciona como um orquestrador centralizado que combina Retrieval-Augmented Generation (RAG) e Machine Learning para entregar previsões e análises contextuais precisas.
 
-## 📋 Declaração do Desafio CBL (Etapa 1)
+## 🎯 O Desafio (CBL)
+Estudantes universitários frequentemente lutam com prazos espremidos, acompanhamento de notas fragmentadas e a gestão da sua própria vida acadêmica. A ausência de um "Painel de Controle" unificado gera estresse e evasão.
 
-Este projeto foi desenvolvido como parte da Etapa 1 do CBL, cujo objetivo é definir um desafio viável para a construção de um sistema com interface, LLM, dados estruturados, RAG, problema de Machine Learning e agentes/tarefas automatizadas.
-
-O domínio escolhido foi a organização acadêmica de estudantes, com foco em auxiliar o acompanhamento de disciplinas, tarefas, prazos, notas e dúvidas frequentes sobre a vida universitária.
-
-### 1. Grande Ideia
-A grande ideia deste projeto é utilizar Inteligência Artificial para apoiar estudantes na organização da rotina acadêmica, facilitando o acompanhamento de tarefas, prazos, disciplinas e informações institucionais.
-
-Em um contexto em que estudantes lidam com várias disciplinas, avaliações, trabalhos e responsabilidades ao mesmo tempo, um assistente inteligente pode ajudar a centralizar informações, reduzir esquecimentos e melhorar a tomada de decisão sobre o que priorizar nos estudos.
-
-### 2. Pergunta Essencial
-Como a Inteligência Artificial pode ajudar estudantes a organizarem melhor seus estudos, acompanharem prazos acadêmicos e acessarem informações importantes de forma rápida e personalizada?
-
-### 3. Desafio
-Criar um assistente acadêmico inteligente capaz de auxiliar estudantes na organização da rotina universitária.
-
-O sistema deverá permitir que o estudante consulte tarefas pendentes, acompanhe disciplinas, verifique notas, receba sugestões de prioridade e tire dúvidas com base em documentos acadêmicos, como regulamentos, FAQs e materiais de orientação de estudo.
-
-Além disso, o projeto deverá integrar dados estruturados, documentos para consulta via RAG, um problema de Machine Learning e agentes capazes de executar tarefas específicas, como listar prazos próximos, gerar um plano semanal de estudos e consultar a situação acadêmica do estudante.
-
-### 4. Justificativa Pessoal
-Com o passar do tempo sendo um estudante percebi que a rotina acadêmica exige organização constante, principalmente quando há várias disciplinas, trabalhos, provas e prazos acontecendo ao mesmo tempo. Muitas vezes, a dificuldade não está apenas em estudar o conteúdo, mas em saber o que deve ser priorizado, quais atividades estão pendentes e onde encontrar rapidamente informações importantes.
-
-Por esse motivo, acredito que um assistente acadêmico inteligente pode ser útil para tornar o processo de estudo mais organizado, prático e eficiente, apoiando o estudante na gestão do tempo e no acompanhamento da própria vida acadêmica em um único lugar com pesquisas de forma rápida e eficiente.
+**A Solução:** Um assistente via Chat (RAG) que responde dúvidas do regulamento com precisão, avisa sobre tarefas pendentes, e utiliza Inteligência Artificial Preditiva para calcular o Risco de Evasão do aluno com base no seu histórico atual.
 
 ---
 
 ## 🏗️ Arquitetura do Sistema
 
-O ecossistema do projeto foi reformulado para utilizar tecnologias modernas de agentes autônomos sem a necessidade de orquestradores visuais:
+O StudyFlow utiliza **CrewAI** para orquestrar múltiplos Agentes autônomos que cooperam entre si.
 
-- **Streamlit**: Interface gráfica do chat de usuário, amigável e reativa, responsável por capturar as interações e exibir as respostas dos agentes.
-- **CrewAI**: Orquestrador da equipe multi-agente. Coordena a colaboração entre os agentes especializados e gerencia o uso de ferramentas (*tools*).
-- **LM Studio**: Servidor local do modelo de linguagem (LLM) que roda localmente o modelo **Qwen 2.5 7B Instruct** (ou similar) garantindo privacidade e custo zero de execução.
-- **Machine Learning (Predictor)**: Um classificador preditivo treinado em Python (`HistGradientBoostingClassifier`) integrado como ferramenta do CrewAI para analisar o risco de evasão acadêmica do aluno com base em dados de notas e finanças.
-- **Bases de Dados CSVs**: Funcionam como o banco de dados estruturado do assistente (notas, tarefas e disciplinas).
-- **Observabilidade (Langfuse)**: Monitoramento em tempo real das execuções dos agentes, permitindo a análise de latência, tokens consumidos e fidelidade das respostas do modelo.
-
----
-
-## 📂 Estrutura do Projeto
-
-Abaixo está a estrutura atual de diretórios e arquivos do projeto:
-
-```text
-Projeto_puc/
-│
-├── .deepeval/                  # Logs e cache da suíte de testes DeepEval
-├── agents/                     # Definição dos agentes e tarefas CrewAI
-│   └── study_crew.py           # Configuração da Crew, agentes, ferramentas e LLM
-│
-├── data/                       # Banco de dados em arquivos CSV
-│   ├── data_students.csv       # Dataset histórico para treino do modelo de ML
-│   ├── disciplinas.csv         # Grade curricular com disciplinas e professores
-│   ├── notas.csv               # Notas e avaliações parciais do aluno
-│   └── tarefas.csv             # Lista de tarefas acadêmicas com prazos e status
-│
-├── ml/                         # Módulo de Inteligência Artificial / Machine Learning
-│   ├── modelo_evasao.joblib    # Binário do modelo preditivo de evasão treinado
-│   ├── metricas_modelo.md      # Relatório detalhado das métricas obtidas
-│   ├── preditor.py             # Script de inferência para o classificador
-│   └── treinar_modelo.py       # Script de treinamento do classificador
-│
-├── scripts/                    # Scripts Python auxiliares de validação e testes
-│   ├── consultar_dados.py      # Script para testes locais rápidos de consultas
-│   └── validar_csvs.py         # Validador de integridade e chaves estrangeiras dos CSVs
-│
-├── tests/                      # Suíte de testes de fidelidade
-│   └── test_flow.py            # Golden Dataset (10 testes) integrado com DeepEval
-│
-├── .env                        # Variáveis de ambiente configuradas
-├── app.py                      # Aplicação web Streamlit (Frontend + Integração CrewAI)
-├── relatorio_projeto.md        # Relatório técnico geral do projeto
-└── README.md                   # Esta documentação do projeto
+```mermaid
+graph TD
+    User([👨‍🎓 Usuário]) -->|Pergunta no Chat| UI[Streamlit App]
+    UI -->|Intercepta| SecIn[🛡️ Input Scanner PII/Toxico]
+    SecIn -->|Prompt Limpo| Crew[CrewAI Orchestrator]
+    
+    Crew --> A1[🤖 Agente Regulamento]
+    Crew --> A2[🤖 Agente de Tarefas]
+    Crew --> A3[🤖 Agente Preditivo]
+    
+    A1 <-->|Busca Vetorial| Qdrant[(Qdrant Cloud DB)]
+    A2 <-->|Busca Estruturada| CSV1[(tarefas.csv)]
+    A3 <-->|Random Forest| ML[(Modelo de Evasão)]
+    
+    Crew -->|Resposta Bruta| SecOut[🛡️ Output Scanner]
+    SecOut -->|Resposta Segura| UI
 ```
 
 ---
 
-## 🛠️ Como Executar o Projeto
-
-Siga o passo a passo abaixo para configurar e rodar o projeto localmente:
-
-### 1. Requisitos Prévios
-* **Python 3.10 ou 3.11** instalado.
-* **LM Studio** aberto, com o modelo de chat (ex: `Qwen 2.5 7B Instruct`) carregado e o **Local Server** ativado na porta `1234`.
-* Variáveis de ambiente configuradas no arquivo `.env`.
-
-### 2. Validação dos Dados
-Antes de rodar a aplicação, verifique a consistência dos dados nas tabelas CSV:
-```bash
-python scripts/validar_csvs.py
-```
-
-### 3. Rodar Testes de Consultas
-Valide se as consultas estruturadas em Python estão retornando os dados corretos dos arquivos locais:
-```bash
-python scripts/consultar_dados.py
-```
-
-### 4. Executar o Streamlit
-Inicie a interface gráfica da aplicação na porta 8502:
-```bash
-streamlit run app.py --server.port 8502
-```
-Acesse a aplicação no seu navegador no endereço: **http://localhost:8502**
+## 🛠️ Stack Tecnológica
+*   **Frontend**: Streamlit
+*   **Orquestração de Agentes**: CrewAI
+*   **LLM Gateway**: LiteLLM (Conectado ao Qwen2.5 7B rodando localmente via LM Studio)
+*   **Vector Database**: Qdrant Cloud (Cloud DB hospedado para alta performance)
+*   **Machine Learning**: Scikit-Learn (Random Forest)
+*   **Telemetria / Observabilidade**: Langfuse
+*   **Avaliação de LLM**: DeepEval (Métricas de Fidelidade e Relevância)
+*   **Segurança**: Custom Security Pipeline (Regex / Heuristics) substituindo LLM Guard para máxima compatibilidade local.
 
 ---
 
-## 🤖 Configuração dos Agentes (CrewAI)
+## 🚀 Como Executar Localmente
 
-A equipe é composta por dois agentes inteligentes definidos em [study_crew.py](file:///c:/Users/felpp/OneDrive/Documentos/Projeto_puc/agents/study_crew.py):
+### 1. Pré-requisitos
+*   **Python 3.10+** (Recomendado usar Anaconda)
+*   **LM Studio** rodando na porta `1234` com o modelo Qwen (ou equivalente).
+*   Uma conta no **Langfuse** para observabilidade.
 
-1. **Organizador de Tarefas Acadêmicas**:
-   - **Objetivo**: Auxiliar o estudante a gerenciar prazos, prioridades e estruturar a rotina de estudos.
-   - **Ferramentas**: `Consultar Cronograma de Tarefas` e `Consultar Informações das Disciplinas`.
+### 2. Instalação
+Clone o repositório e instale as dependências:
+```bash
+git clone https://github.com/seu-usuario/studyflow-ai.git
+cd studyflow-ai
+pip install -r requirements.txt
+```
 
-2. **Mentor Acadêmico de Suporte ao Aluno**:
-   - **Objetivo**: Analisar notas, médias, fornecer conselhos de apoio e acionar o preditor de evasão acadêmica.
-   - **Ferramentas**: `Consultar Notas do Aluno`, `Consultar Cronograma de Tarefas`, `Consultar Informações das Disciplinas` e `Prever Risco de Evasão Acadêmica` (conexão com o modelo ML).
+### 3. Variáveis de Ambiente
+Crie um arquivo `.env` na raiz do projeto, usando o `.env.example` como base:
+```env
+LM_STUDIO_BASE_URL=http://localhost:1234/v1
+LANGFUSE_SECRET_KEY=sk-lf-...
+LANGFUSE_PUBLIC_KEY=pk-lf-...
+LANGFUSE_BASE_URL=https://us.cloud.langfuse.com
+QDRANT_URL=https://...
+QDRANT_API_KEY=...
+```
+
+### 4. Executando
+Basta subir o servidor do Streamlit:
+```bash
+streamlit run app.py
+```
 
 ---
 
-## 🧪 Suíte de Testes (DeepEval)
+## 🔒 Segurança e Guardrails
+O projeto implementa uma pipeline de segurança `security.py` robusta que intercepta as mensagens:
+*   **Anonimização de PII**: CPFs, Telefones e Emails são mascarados ANTES de irem para o LLM.
+*   **Ban Topics**: Tópicos como política, violência e dicas médicas/financeiras são estritamente bloqueados.
+*   **Anti-Jailbreak**: Bloqueio de prompts que tentam forçar o modelo a "ignorar as regras".
 
-Para rodar a validação do Golden Dataset contendo as 10 perguntas cruciais de teste de fidelidade (garantindo 100% de precisão e zero alucinações), use o pytest integrado com o DeepEval:
-```bash
-deepeval test run tests/test_flow.py
-```
-*Certifique-se de que o LM Studio está ativo, pois o avaliador utiliza a API local compatível com OpenAI para rodar as métricas de Faithfulness.*
+---
+
+## ⚠️ Limitações Conhecidas
+*   **Hardware Local**: O sistema foi projetado para rodar offline usando *LM Studio*, dependendo da placa de vídeo do usuário. Respostas podem ser mais lentas em hardware sem aceleração (sem GPU).
+*   **Tamanho de Contexto**: A limitação de VRAM local restringe o tamanho do RAG. Por isso, migramos de Chroma local para o *Qdrant Cloud* para aliviar o peso de indexação da máquina host.

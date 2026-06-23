@@ -1,10 +1,18 @@
+# Segredos e variáveis de ambiente (NUNCA versionar o .env real)
 .env
+!.env.example
+
+# Python
 __pycache__/
 *.pyc
 .venv/
 venv/
+
+# Ferramentas externas
 .flowise/
 chroma/
 *.pkl
 .deepeval/
 .pytest_cache/
+
+tmp/

@@ -4,9 +4,9 @@ load_dotenv()
 import streamlit as st
 import os
 try:
-    from langfuse import observe
-except ImportError:
     from langfuse.decorators import observe
+except ImportError:
+    from langfuse import observe
 from agents.study_crew import run_study_crew
 
 # Configurações da página
@@ -83,6 +83,12 @@ def query_assistant(question):
             f"Detalhes: {e}"
         )
 
+from agents.security import get_security_pipeline
+
+@st.cache_resource
+def load_security_pipeline():
+    return get_security_pipeline()
+
 # Recebe o input do usuário na barra de chat
 if user_input := st.chat_input("Digite sua pergunta... (Ex: Quais minhas tarefas de prioridade alta?)"):
     
@@ -91,13 +97,31 @@ if user_input := st.chat_input("Digite sua pergunta... (Ex: Quais minhas tarefas
     with st.chat_message("user"):
         st.markdown(user_input)
 
-    # Exibe o indicador de 'digitando...' e faz a requisição
+    # 1. SEGURANÇA: Validar Input do Usuário
+    sec_pipeline = load_security_pipeline()
+    sanitized_input, is_valid_input, input_reason = sec_pipeline.check_input(user_input)
+    
     with st.chat_message("assistant"):
-        with st.spinner("Analisando bases de dados com agentes inteligentes..."):
-            bot_response = query_assistant(user_input)
+        if not is_valid_input:
+            # Bloqueia e exibe motivo
+            bot_response = f"🚨 **Acesso Bloqueado:** {input_reason}\n\n*Por favor, faça perguntas apenas sobre o escopo acadêmico do sistema.*"
             st.markdown(bot_response)
-            # Força o envio imediato de todos os traces do Langfuse e LiteLLM
-            flush_traces()
+        else:
+            # Exibe o indicador de 'digitando...' e faz a requisição usando o input sanitizado (PII removido se houver)
+            with st.spinner("Analisando bases de dados com agentes inteligentes..."):
+                bot_response_raw = query_assistant(sanitized_input)
+                
+                # 2. SEGURANÇA: Validar Output do Agente
+                sanitized_output, is_valid_output, output_reason = sec_pipeline.check_output(sanitized_input, bot_response_raw)
+                
+                if not is_valid_output:
+                    bot_response = f"🚨 **Resposta Bloqueada:** O sistema de segurança interceptou a resposta. Motivo: {output_reason}"
+                else:
+                    bot_response = sanitized_output
+                    
+                st.markdown(bot_response)
+                # Força o envio imediato de todos os traces do Langfuse e LiteLLM
+                flush_traces()
     
     # Salva a resposta do bot no histórico da sessão
     st.session_state.messages.append({"role": "assistant", "content": bot_response})

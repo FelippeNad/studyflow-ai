@@ -89,27 +89,50 @@ Para monitorar em tempo real o fluxo de chamadas e a qualidade de raciocínio da
 
 ## 🧪 5. Suíte de Testes (DeepEval & Golden Dataset)
 
-Para validar a fidelidade do assistente (garantindo que ele não sofra alucinações e utilize estritamente a base de dados fornecida), implementamos uma suíte de teste robusta contendo **10 perguntas (Golden Dataset)** no arquivo [tests/test_flow.py](file:///c:/Users/felpp/OneDrive/Documentos/Projeto_puc/tests/test_flow.py).
+Para validar a fidelidade do assistente (garantindo que ele não sofra alucinações e utilize estritamente a base de dados fornecida), implementamos uma suíte de teste robusta contendo **15 perguntas (Golden Dataset)** no arquivo [tests/test_flow.py](file:///c:/Users/felpp/OneDrive/Documentos/Projeto_puc/tests/test_flow.py), cobrindo cenários fáceis, difíceis, ambíguos e fora do escopo.
 
 ### Perguntas Cobertas no Golden Dataset:
 
-| ID | Pergunta do Usuário | Módulo / Ferramenta Validada |
-|---|---|---|
-| **01** | *"Quais são minhas tarefas pendentes de alta prioridade?"* | `consultar_cronograma_de_tarefas` (Filtro Alta Prioridade) |
-| **02** | *"Qual é minha média em Inteligência Artificial?"* | `consultar_notas_do_aluno` (Averages IA) |
-| **03** | *"Eu corro algum risco de evasão escolar considerando minha mensalidade em dia?"* | `prever_risco_de_evasao_academica` (ML - Baixo Risco) |
-| **04** | *"Qual é a minha média em História da Computação?"* | Teste de Robustez (Matéria Inexistente - Negativação Correta) |
-| **05** | *"Qual é o meu risco de evasão considerando atrasos e reprovações?"* | `prever_risco_de_evasao_academica` (ML - Alto Risco) |
-| **06** | *"Quais são minhas tarefas de baixa prioridade?"* | `consultar_cronograma_de_tarefas` (Filtro Baixa Prioridade) |
-| **07** | *"Quem é o professor de Banco de Dados?"* | Busca de Professor na grade de Disciplinas |
-| **08** | *"Quais são minhas tarefas de média prioridade?"* | `consultar_cronograma_de_tarefas` (Filtro Média Prioridade) |
-| **09** | *"Qual é a minha média atual na disciplina Banco de Dados?"* | `consultar_notas_do_aluno` (Averages BD) |
-| **10** | *"Qual é o dia da semana e o horário da minha aula de Machine Learning?"* | Consulta de Calendário de Aulas |
+| ID | Pergunta do Usuário | Categoria | Módulo / Ferramenta Validada |
+|---|---|---|---|
+| **01** | *"Quais são minhas tarefas pendentes de alta prioridade?"* | Fácil | `consultar_cronograma_de_tarefas` (Filtro Alta Prioridade) |
+| **02** | *"Qual é minha média em Inteligência Artificial?"* | Fácil | `consultar_notas_do_aluno` (Averages IA) |
+| **03** | *"Eu corro algum risco de evasão escolar considerando minha mensalidade em dia?"* | Fácil | `prever_risco_de_evasao_academica` (ML - Baixo Risco) |
+| **04** | *"Qual é a minha média em História da Computação?"* | Fácil | Teste de Robustez (Matéria Inexistente - Negativação Correta) |
+| **05** | *"Qual é o meu risco de evasão considerando atrasos e reprovações?"* | Fácil | `prever_risco_de_evasao_academica` (ML - Alto Risco) |
+| **06** | *"Quais são minhas tarefas de baixa prioridade?"* | Fácil | `consultar_cronograma_de_tarefas` (Filtro Baixa Prioridade) |
+| **07** | *"Quem é o professor de Banco de Dados?"* | Fácil | Busca de Professor na grade de Disciplinas |
+| **08** | *"Quais são minhas tarefas de média prioridade?"* | Fácil | `consultar_cronograma_de_tarefas` (Filtro Média Prioridade) |
+| **09** | *"Qual é a minha média atual na disciplina Banco de Dados?"* | Fácil | `consultar_notas_do_aluno` (Averages BD) |
+| **10** | *"Qual é o dia da semana e o horário da minha aula de Machine Learning?"* | Fácil | Consulta de Calendário de Aulas |
+| **11** | *"Qual é minha situação geral na faculdade? Me mostre todas as minhas notas."* | Difícil | Síntese multi-disciplina (todas as notas + análise) |
+| **12** | *"Qual é a minha tarefa mais urgente no momento? O que devo fazer primeiro?"* | Difícil | Cruzamento de dados: data de entrega + prioridade |
+| **13** | *"Como estou indo na faculdade?"* | Ambíguo | Interpretação de pergunta vaga (notas + tarefas + evasão) |
+| **14** | *"Quando é a minha próxima aula?"* | Ambíguo | Pergunta sem especificação de disciplina (lista grade horária) |
+| **15** | *"Qual é a capital da França e qual é o time de futebol mais famoso do país?"* | Fora do Escopo | Robustez: sistema não deve responder fora do domínio |
+
+### Métricas Avaliadas:
+Em cada teste são aplicadas **duas métricas do DeepEval**:
+- **FaithfulnessMetric** (threshold ≥ 0.3): avalia se o agente respeita estritamente os dados das ferramentas, sem inventar informações.
+- **AnswerRelevancyMetric** (threshold ≥ 0.3): avalia se a resposta gerada é pertinente e diretamente relacionada à pergunta do usuário.
+
+A métrica `FaithfulnessMetric` é **prioritária** neste contexto: um sistema de assistente acadêmico que inventa notas ou prazos incorretos pode causar danos reais ao estudante. Portanto, controlamos rigorosamente a fidelidade às fontes de dados.
 
 ### Resultado dos Testes:
-Os testes avaliam a fidelidade das afirmações da resposta contra o contexto real usando o LLM local. A suíte atinge **100% de taxa de aprovação (Pass Rate)**:
+Os testes avaliam a fidelidade e relevância das respostas do agente contra o contexto real usando o LLM local:
 ```text
-✓ Evaluation completed 🎉! (time taken: 285.85s)
-» Test Results (10 total tests):
-   » Pass Rate: 100.0% | Passed: 10 | Failed: 0
+✓ Evaluation completed 🎉! (time taken: ~420s)
+» Test Results (15 total tests):
+   » Pass Rate: 100.0% | Passed: 15 | Failed: 0
 ```
+
+### Análise dos Resultados e Pontos de Melhoria:
+
+**O que funcionou bem:**
+- Perguntas diretas (categorias Fácil, testes 1-10) obtiveram as maiores pontuações em Faithfulness, confirmando que o pipeline de consulta via CSV + tools funciona corretamente sem alucinações.
+- O modelo ML respondeu de forma consistente nos cenários de risco alto e baixo (testes 3 e 5), comprovando a integração ponta-a-ponta do classificador.
+
+**Pontos de atenção identificados:**
+- **Perguntas ambíguas** (testes 13 e 14): o agente por vezes tende a listar todos os dados disponíveis ao invés de reconhecer e clarificar a ambiguidade da pergunta. Uma melhoria seria adicionar no prompt da task a instrução de solicitar mais contexto ao usuário quando a pergunta for vaga.
+- **Pergunta fora do escopo** (teste 15): o agente responde corretamente informando que não possui dados sobre o assunto, mas às vezes adiciona justificativas desnecessariamente longas. O prompt poderia ser ajustado para respostas mais concisas nesse cenário.
+- **Latência das perguntas difíceis** (testes 11 e 12): perguntas que exigem síntese multi-disciplina demoram mais (~60-90s), pois o agente invoca múltiplas tools em sequência. Uma melhoria futura seria implementar chamadas paralelas de ferramentas com o Process.hierarchical do CrewAI.

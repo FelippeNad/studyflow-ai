@@ -16,6 +16,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 NOTAS_PATH = os.path.join(BASE_DIR, 'data', 'notas.csv')
 TAREFAS_PATH = os.path.join(BASE_DIR, 'data', 'tarefas.csv')
 DISCIPLINAS_PATH = os.path.join(BASE_DIR, 'data', 'disciplinas.csv')
+DOCUMENTOS_DIR = os.path.join(BASE_DIR, 'documentos')
 
 # Configuração do LLM apontando para o LM Studio local
 def get_active_model_name():
@@ -43,7 +44,7 @@ lm_studio_llm = LLM(
 
 # --- DEFINIÇÃO DAS FERRAMENTAS ---
 
-@tool("Consultar Notas do Aluno")
+@tool("consultar_notas")
 def consultar_notas_tool(disciplina: str = None) -> str:
     """
     Consulta as notas, avaliações e médias do aluno nas disciplinas.
@@ -100,7 +101,7 @@ def consultar_notas_tool(disciplina: str = None) -> str:
     except Exception as e:
         return f"Erro ao consultar notas: {e}"
 
-@tool("Consultar Cronograma de Tarefas")
+@tool("consultar_tarefas")
 def consultar_tarefas_tool(prioridade: str = None) -> str:
     """
     Consulta a lista de tarefas, prazos, prioridades e status do aluno.
@@ -128,7 +129,7 @@ def consultar_tarefas_tool(prioridade: str = None) -> str:
     except Exception as e:
         return f"Erro ao consultar tarefas: {e}"
 
-@tool("Prever Risco de Evasão Acadêmica")
+@tool("prever_evasao")
 def prever_risco_evasao_tool(
     tuition_fees_up_to_date: int = 1,
     debtor: int = 0,
@@ -186,7 +187,7 @@ def prever_risco_evasao_tool(
     except Exception as e:
         return f"Erro ao rodar predição de ML: {e}"
 
-@tool("Consultar Informações das Disciplinas")
+@tool("consultar_disciplinas")
 def consultar_disciplinas_tool() -> str:
     """Consulta informações sobre as disciplinas ofertadas, incluindo o nome do professor responsável, carga horária, dia da semana e horário das aulas."""
     try:
@@ -205,6 +206,32 @@ def consultar_disciplinas_tool() -> str:
     except Exception as e:
         return f"Erro ao consultar disciplinas: {e}"
 
+@tool("consultar_regulamento_rag")
+def consultar_regulamento_tool(pergunta: str = None) -> str:
+    """
+    Busca semanticamente nos documentos institucionais da faculdade usando RAG
+    (Retrieval-Augmented Generation) com ChromaDB e embeddings locais.
+    Os documentos indexados são: Regulamento Acadêmico, FAQ do Aluno e Manual de Estudos.
+    Use esta ferramenta para responder perguntas sobre:
+    - Regras de notas, média mínima para aprovação (6.0), cálculo de média ponderada
+    - Prova de recuperação (Exame Final): quem tem direito, como é calculada
+    - Segunda Chamada: prazo (48h) e documentos necessários
+    - Faltas e frequência mínima obrigatória (75%)
+    - Desligamento do curso (reprovar 3x na mesma disciplina)
+    - Revisão de nota: prazo de 5 dias úteis
+    - Trancamento ou cancelamento de disciplina
+    - Dicas de estudo (Técnica Pomodoro, Active Recall, Repetição Espaçada)
+    - Qualquer outra regra ou política acadêmica institucional
+    Parâmetro 'pergunta': a dúvida do aluno para busca semântica nos documentos.
+    """
+    try:
+        from rag.document_rag import buscar_documentos_rag
+        query = pergunta if pergunta else "regulamento acadêmico notas avaliação"
+        return buscar_documentos_rag(query, n_results=4)
+    except Exception as e:
+        return f"Erro ao consultar documentos (RAG): {e}"
+
+
 # --- DEFINIÇÃO DOS AGENTES ---
 
 # 1. Organizador de Tarefas
@@ -212,7 +239,7 @@ task_agent = Agent(
     role="Organizador de Tarefas Acadêmicas",
     goal="Ajudar o estudante a gerenciar seus prazos, priorizar entregas e estruturar sua rotina de estudos.",
     backstory="Você é um assistente de produtividade extremamente focado e disciplinado. Seu objetivo é ajudar o aluno a nunca perder uma entrega e manter o calendário de estudos em ordem.",
-    tools=[consultar_tarefas_tool, consultar_disciplinas_tool],
+    tools=[consultar_tarefas_tool, consultar_disciplinas_tool, consultar_regulamento_tool],
     llm=lm_studio_llm,
     verbose=True
 )
@@ -220,9 +247,9 @@ task_agent = Agent(
 # 2. Mentor Acadêmico
 mentor_agent = Agent(
     role="Mentor Acadêmico de Suporte ao Aluno",
-    goal="Analisar as notas do estudante, calcular seu desempenho médio, prever riscos acadêmicos ou de evasão usando a ferramenta de ML, e verificar tarefas acadêmicas e horários de aula.",
-    backstory="Você é um conselheiro estudantil amigável, acolhedor e focado no sucesso do estudante. Você usa dados de notas, ferramentas de predição de ML, informações de disciplinas/professores e tarefas para responder às dúvidas do estudante de forma integrada.",
-    tools=[consultar_notas_tool, consultar_tarefas_tool, prever_risco_evasao_tool, consultar_disciplinas_tool],
+    goal="Analisar as notas do estudante, calcular seu desempenho médio, prever riscos acadêmicos ou de evasão usando a ferramenta de ML, verificar tarefas acadêmicas e horários de aula, e responder dúvidas sobre regras e regulamentos institucionais.",
+    backstory="Você é um conselheiro estudantil amigável, acolhedor e focado no sucesso do estudante. Você usa dados de notas, ferramentas de predição de ML, informações de disciplinas/professores, tarefas e documentos institucionais para responder às dúvidas do estudante de forma integrada.",
+    tools=[consultar_notas_tool, consultar_tarefas_tool, prever_risco_evasao_tool, consultar_disciplinas_tool, consultar_regulamento_tool],
     llm=lm_studio_llm,
     verbose=True
 )
@@ -239,6 +266,9 @@ def run_study_crew(pergunta_usuario: str) -> str:
             "- Se a pergunta envolver prazos, entregas ou cronograma, consulte as tarefas.\n"
             "- Se a pergunta envolver notas, médias, desempenho ou risco de evasão/desistência, consulte as notas e use a ferramenta de previsão de evasão.\n"
             "- Se a pergunta envolver professores, horários, dias da semana, aulas ou carga horária, consulte as disciplinas.\n"
+            "- Se a pergunta envolver regras acadêmicas, média mínima, reprovação, recuperação, segunda chamada, faltas, trancamento, revisão de nota, dicas de estudo ou qualquer política institucional, consulte os documentos acadêmicos.\n"
+            "- FORA DO ESCOPO: Se a pergunta não puder ser respondida com nenhuma das ferramentas disponíveis (assuntos completamente não acadêmicos), responda exatamente: 'Não possuo informações sobre isso na minha base de dados. Posso te ajudar com: notas e médias, tarefas e prazos, horários e professores, regulamentos e regras acadêmicas, ou risco de evasão acadêmica.'\n"
+            "- NUNCA retorne uma resposta vazia ou apenas com marcadores sem conteúdo. Se não houver dados disponíveis, informe claramente.\n"
             "- IMPORTANTE: Limite-se estritamente às informações extraídas das ferramentas. Não invente, não deduza e não extrapole informações.\n"
             "- IMPORTANTE: Responda de forma extremamente direta, concisa e objetiva. Liste apenas os dados de forma limpa. Não adicione saudações, introduções ou comentários de encerramento/observações finais (por exemplo, NÃO escreva 'estou à disposição', 'parabéns pelo bom desempenho', 'não precisa fazer imediatamente' ou similares). Escreva apenas a lista factual de dados.\n"
             "- FORMATO DE LISTAS: Se a resposta contiver múltiplos itens ou dados, você deve formatá-los obrigatoriamente como uma lista com marcadores do markdown (ex: usando `-` no início de cada linha), com cada item em sua própria linha para garantir uma renderização visual correta."
