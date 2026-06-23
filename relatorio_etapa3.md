@@ -4,8 +4,8 @@
 
 **Nome do Aluno:** Felippe
 **Desafio Escolhido:** Organização da vida acadêmica (Gestão de Regulamento, Notas e Previsão de Evasão)
-**URL da Aplicação (Deploy):** [INSERIR_URL_STREAMLIT_AQUI]
-**URL do Vídeo (Apresentação):** [INSERIR_URL_YOUTUBE_AQUI]
+**URL da Aplicação (Deploy):** https://studyflow-ai-exyhdiosyx3d3xlix8zefj.streamlit.app/
+**URL do Vídeo (Apresentação):** https://www.youtube.com/watch?v=vt2-bDaiV9c
 
 ---
 
