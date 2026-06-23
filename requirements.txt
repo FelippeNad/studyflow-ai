@@ -12,7 +12,7 @@ langfuse==2.57.0
 # Testes e Avaliação de LLM
 deepeval==3.9.6
 pytest==7.4.0
-openai==1.30.0
+openai==2.41.0
 
 # Machine Learning
 scikit-learn==1.4.0
