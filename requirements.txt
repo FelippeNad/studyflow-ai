@@ -26,4 +26,4 @@ pandas==2.2.2
 
 # Utilitários
 python-dotenv==1.2.2
-requests==2.31.0
+requests==2.34.2
