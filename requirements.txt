@@ -1,5 +1,5 @@
 # Interface Web
-streamlit==1.34.0
+streamlit==1.58.0
 
 # Agentes de IA
 crewai==1.14.6
